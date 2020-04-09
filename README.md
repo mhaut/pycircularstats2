@@ -13,9 +13,17 @@ python setup.py install --user
 
 OR
 
-# With conda installer
+# With conda installer (recommended)
 git clone https://github.com/mhaut/pycircularstats/
+cd pycircularstats
 conda env create -f enviroment.yml
+python setup.py install --user
+```
+
+### Run Circular Visual Statistics
+```
+cd examples/pyCircStudio
+python circularStudio.py
 ```
 
 ### Run examples

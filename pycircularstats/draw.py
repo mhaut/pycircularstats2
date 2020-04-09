@@ -10,7 +10,7 @@ import pycircularstats.convert as pyCconvert
 # Style sheets reference
 #https://matplotlib.org/3.1.1/gallery/style_sheets/style_sheets_reference.html
 
-DPIEXPORT = 125
+DPIEXPORT = 150
 #STYLE_MATPLOTLIB = "dark_background"
 #STYLE_MATPLOTLIB = "seaborn-deep"
 STYLE_MATPLOTLIB = "default"
@@ -25,6 +25,8 @@ def creategraphicpolar(num_elements, length):
     ax.set_theta_direction(-1)
     ax.set_title("Sample size, n = "+str(num_elements), va='bottom')
     if length != None: ax.set_rlim(0, length)
+    for ax in fig.axes:
+        ax.margins(0,0)
     return fig, ax
 
 
@@ -89,7 +91,7 @@ def drawdistribution(azimuths):
         path = Path(vertices, codes)
         patch = patches.PathPatch(path,facecolor='none',edgecolor='red',lw=1)
         ax.add_patch(patch)
-    plt.show()
+    return ax.get_figure()
 
 
 def drawmoduleandazimuthdistribution(data_x, data_y):
@@ -126,7 +128,7 @@ def drawmoduleandazimuthdistribution(data_x, data_y):
                     xycoords='data', xytext=(0, 0), textcoords='data',
                     arrowprops=dict(arrowstyle="->, head_width=1, head_length=1",
                     connectionstyle="arc3",edgecolor='red', linewidth = 2.5))
-        plt.show()
+    return ax.get_figure()
 
 
 def drawhistogram(azimuths, classSize = 15, changeStype=True):
@@ -163,7 +165,7 @@ def drawhistogram(azimuths, classSize = 15, changeStype=True):
                                         linewidth = 3))
         else:
             print("Concentration is low, the mean azimuth is not drawn")
-    plt.show()
+    return ax.get_figure()
 
 
 def drawPoints(data_x, data_y, outlier_percent = 0.05):
@@ -181,7 +183,7 @@ def drawPoints(data_x, data_y, outlier_percent = 0.05):
         fig, ax = creategraphicpolar(data_x.shape[0], maxlen)
         ax.plot(theta[cant:],module[cant:],'o', color='b',markersize=5)
         ax.plot(theta[:cant],module[:cant],'o', color='r',markersize=5)
-    plt.show()
+    return ax.get_figure()
 
 
 def drawdensityMap(data_x, data_y, outlier_percent = 0.05, paintpoint = False,
@@ -205,7 +207,7 @@ def drawdensityMap(data_x, data_y, outlier_percent = 0.05, paintpoint = False,
         cant = int(data_x.shape[0] * outlier_percent)
         ax.plot(data[:-cant,0],data[:-cant,1],'o', mfc='black',mec='k')
         ax.plot(data[-cant:,0],data[-cant:,1],'o', mfc='red',mec='k')
-    plt.show()
+    return ax.get_figure()
 
 
 def drawVectors(data,scaleVector=None):
@@ -227,29 +229,27 @@ def drawVectors(data,scaleVector=None):
     ymin = min(np.min(yini), np.min(yfin))
     ymax = max(np.max(yini), np.max(yfin))
 
-    ax = plt.subplot(111)
-    ax.set_xlim(xmin, xmax)
-    ax.set_ylim(ymin, ymax)
-    for i in range(len(xini)):
-        valueScale = 0.3
-        style = "->, head_width="+str(valueScale)+", head_length="+str(valueScale)
-        ax.annotate("",
-        xy=(xfin[i], yfin[i]), xycoords='data',
-        xytext=(xini[i], yini[i]), textcoords='data',
-        arrowprops=dict(arrowstyle=style,
-                        connectionstyle="arc3",edgecolor='red',
-                        linewidth = 1,
-                        ),
-        )
-    ax.set_title("Sample size, n = "+str(len(xini)), va='bottom')
-    plt.show()
+    with plt.style.context(STYLE_MATPLOTLIB):
+        fig = plt.figure(dpi = DPIEXPORT)
+        ax = fig.add_subplot(111)
+        ax.set_xlim(xmin, xmax)
+        ax.set_ylim(ymin, ymax)
+        for i in range(len(xini)):
+            valueScale = 0.3
+            style = "->, head_width="+str(valueScale)+", head_length="+str(valueScale)
+            ax.annotate("",
+            xy=(xfin[i], yfin[i]), xycoords='data',
+            xytext=(xini[i], yini[i]), textcoords='data',
+            arrowprops=dict(arrowstyle=style,
+                            connectionstyle="arc3",edgecolor='red',
+                            linewidth = 1,
+                            ),
+            )
+        ax.set_title("Sample size, n = "+str(len(xini)), va='bottom')
+    return ax.get_figure()
 
 
 def drawqqplot(azimuths):
-    fig = plt.figure(dpi = DPIEXPORT)
-    ax = plt.subplot(111)
-    ax.set_title("QQ plot")
-    ax.grid(True)
     percent = int(azimuths.shape[0] * 20 / 100)
     sort_vectors = np.radians(np.sort(azimuths))
     v = sort_vectors / (2*np.pi)
@@ -267,6 +267,11 @@ def drawqqplot(azimuths):
     z = np.vstack((x.T,y.T))
     z = np.array(sorted(z, key=lambda a_entry: a_entry[1]))
 
-    ax.plot(z[:,0],z[:,1],'o')
-    plt.show()
+    with plt.style.context(STYLE_MATPLOTLIB):
+        fig = plt.figure(dpi = DPIEXPORT)
+        ax = fig.add_subplot(111)
+        ax.set_title("QQ plot")
+        ax.grid(True)
+        ax.plot(z[:,0],z[:,1],'o')
+    return ax.get_figure()
 

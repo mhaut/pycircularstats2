@@ -1,11 +1,12 @@
 
-name: PyCiruclarStats
+name: PyCircularStats
 channels:
   - defaults
 dependencies:
   - numpy
   - scipy
   - matplotlib
-  - scikit
+  - scikit-learn
   - python=3.6.9
   - scikit-learn
+  - pyqt

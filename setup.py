@@ -12,7 +12,7 @@ from shutil import rmtree
 from setuptools import find_packages, setup, Command
 
 # Package meta-data.
-NAME = 'pyCircStats'
+NAME = 'pycircularstats'
 DESCRIPTION = 'Circular statistics in python.'
 URL = 'https://github.com/mhaut/pycircularstats'
 EMAIL = 'me@example.com'
@@ -22,7 +22,7 @@ VERSION = '0.1.0'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    'numpy', 'scipy', 'matplotlib', 'scikit-learn',
+    'numpy', 'scipy', 'matplotlib', 'scikit-learn', 'pyqt5',
 ]
 
 # What packages are optional?

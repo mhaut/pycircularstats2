@@ -202,13 +202,14 @@ def raotest(azimuths, alpha=0.01):
 
         alphas = [0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 0.9]
         if alpha not in alphas:
-            print("Alphas value are restricted to 0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 0.9")
+            string = "  Alphas value are restricted to \n 0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 0.9"
         else:
             value = tableraoII[trow, alphas.index(alpha)]
-            if value >= L: print("Rao Test: the hypothesis of uniformity is accepted for P = " + str(alpha))
-            else: print("Rao Test: the hypothesis of uniformity is rejected for P = " + str(alpha))
+            if value >= L: string = "  Rao Test. the hypothesis of uniformity \n  is accepted for P = " + str(alpha)
+            else: string = "  Rao Test: the hypothesis of uniformity \n  is rejected for P = " + str(alpha)
     else:
-        print("Rao Test: Size of sample incorrect")
+        string = "  Rao Test: Size of sample incorrect"
+    return string + "\n \n"
 
 
 def rayleightest(azimuths):
@@ -216,8 +217,9 @@ def rayleightest(azimuths):
     m_module = meanmodule(azimuths)
     z = n * np.power(m_module,2)
     p = np.exp(-z)
-    if round(p, 3) == 0: print("Rayleigh Test: P-value for the hypothesis of uniformity < 0.001")
-    else: print("Rayleigh Test: P-value for the hypothesis of uniformity = " + str(round(p, 3)))
+    if round(p, 3) == 0: string = "  Rayleigh Test: P-value for the \n  hypothesis of uniformity < 0.001"
+    else: string = "  Rayleigh Test: P-value for the \n  hypothesis of uniformity = " + str(round(p, 3))
+    return string + "\n \n"
 
 
 
@@ -235,21 +237,21 @@ def allmodulestatistics(modules, ndig = 2):
     cs           = sp_stats.stats.skew(modules, bias=False)
     ca           = sp_stats.stats.kurtosis(modules,bias=False)
     formatSpec = '.'+str(ndig)+'f'
-    print("  ---------------------------  ")
-    print("  LINEAR STATISTICS - MODULES  ")
-    print("  ---------------------------  ")
-    print("  NUMBER OF ELEMENTS = " +str(n_elements))
-    print("  MIN VALUE = "                     + str(format(round(min_value,    ndig),formatSpec)))
-    print("  MIN VALUE = "                     + str(format(round(max_value,    ndig),formatSpec)))
-    print("  RANGE = "                         + str(format(round(range_value,  ndig),formatSpec)))
-    print("  ARITHMETIC MEAN = "               + str(format(round(m_arithmetic, ndig),formatSpec)))
-    print("  MEAN STANDARD ERROR = "           + str(format(round(s_error,      ndig),formatSpec)))
-    print("  STANDARD DEVIATION = "            + str(format(round(s_d_module,   ndig),formatSpec)))
-    print("  VARIANCE = "                      + str(format(round(v_module,     ndig),formatSpec)))
-    print("  POPULATION STANDARD DEVIATION = " + str(format(round(s_d_module_p, ndig),formatSpec)))
-    print("  POPULATION VARIANCE = "           + str(format(round(v_module_p,   ndig),formatSpec)))
-    print("  SKEWNESS COEFFICIENT = "          + str(format(round(cs,           ndig),formatSpec)))
-    print("  KURTOSIS COEFFICIENT = "          + str(format(round(ca,           ndig),formatSpec)))
+    string  = ("  LINEAR STATISTICS - MODULES  "+ "\n")
+    string += ("  ---------------------------  "+ "\n")
+    string += ("  NUMBER OF ELEMENTS = " +str(n_elements)+ "\n")
+    string += ("  MIN VALUE = "                     + str(format(round(min_value,    ndig),formatSpec))+ "\n")
+    string += ("  MAX VALUE = "                     + str(format(round(max_value,    ndig),formatSpec))+ "\n")
+    string += ("  RANGE = "                         + str(format(round(range_value,  ndig),formatSpec))+ "\n")
+    string += ("  ARITHMETIC MEAN = "               + str(format(round(m_arithmetic, ndig),formatSpec))+ "\n")
+    string += ("  MEAN STANDARD ERROR = "           + str(format(round(s_error,      ndig),formatSpec))+ "\n")
+    string += ("  STANDARD DEVIATION = "            + str(format(round(s_d_module,   ndig),formatSpec))+ "\n")
+    string += ("  VARIANCE = "                      + str(format(round(v_module,     ndig),formatSpec))+ "\n")
+    string += ("  POPULATION STANDARD DEVIATION = " + str(format(round(s_d_module_p, ndig),formatSpec))+ "\n")
+    string += ("  POPULATION VARIANCE = "           + str(format(round(v_module_p,   ndig),formatSpec))+ "\n")
+    string += ("  SKEWNESS COEFFICIENT = "          + str(format(round(cs,           ndig),formatSpec))+ "\n")
+    string += ("  KURTOSIS COEFFICIENT = "          + str(format(round(ca,           ndig),formatSpec)) + "\n")
+    return string + "\n"
 
 
 def allazimuthstatistic(azimuths, ndig=2):
@@ -264,19 +266,19 @@ def allazimuthstatistic(azimuths, ndig=2):
     k_azimuth    = kurtosisazimuthcoefficient(azimuths)
 
     formatSpec = '.'+str(ndig)+'f'
-    print("  ------------------------------  ")
-    print("  CIRCULAR STATISTICS - AZIMUTHS  ")
-    print("  ------------------------------  ")
-    print("  NUMBER OF ELEMENTS = " +str(n_elements))
-    print("  MEAN AZIMUTH = "    + str(format(round(m_azimuth,    ndig),formatSpec)))
-    print("  MEAN MODULE = "    + str(format(round(m_module,    ndig),formatSpec)))
-    print("  CIRCULAR STANDARD DEVIATION = "    + str(format(round(s_deviation,    ndig),formatSpec)))
-    print("  CIRCULAR VARIANCE = "    + str(format(round(c_variance,    ndig),formatSpec)))
-    print("  CIRCULAR DISPERSAL = "    + str(format(round(c_dispersal,    ndig),formatSpec)))
-    print("  VON MISES PARAMETER = "    + str(format(round(vm_parameter,    ndig),formatSpec)))
-    print("  SKEWNESS COEFFICIENT = "    + str(format(round(s_azimuth,    ndig),formatSpec)))
-    print("  KURTOSIS COEFFICIENT = "    + str(format(round(k_azimuth,    ndig),formatSpec)))
-
+    string  = "  ------------------------------  " + "\n"
+    string += ("  CIRCULAR STATISTICS - AZIMUTHS  " + "\n")
+    string += ("  ------------------------------  " + "\n")
+    string += ("  NUMBER OF ELEMENTS = " +str(n_elements) + "\n")
+    string += ("  MEAN AZIMUTH = "    + str(format(round(m_azimuth,    ndig),formatSpec)) + "\n")
+    string += ("  MEAN MODULE = "    + str(format(round(m_module,    ndig),formatSpec)) + "\n")
+    string += ("  CIRCULAR STANDARD DEVIATION = "    + str(format(round(s_deviation,    ndig),formatSpec)) + "\n")
+    string += ("  CIRCULAR VARIANCE = "    + str(format(round(c_variance,    ndig),formatSpec)) + "\n")
+    string += ("  CIRCULAR DISPERSAL = "    + str(format(round(c_dispersal,    ndig),formatSpec)) + "\n")
+    string += ("  VON MISES PARAMETER = "    + str(format(round(vm_parameter,    ndig),formatSpec)) + "\n")
+    string += ("  SKEWNESS COEFFICIENT = "    + str(format(round(s_azimuth,    ndig),formatSpec)) + "\n")
+    string += ("  KURTOSIS COEFFICIENT = "    + str(format(round(k_azimuth,    ndig),formatSpec)) + "\n")
+    return string + "\n"
 
 def allharmonicMean(vectors):
     n = vectors.shape[0]

@@ -1,0 +1,11 @@
+
+name: PyCiruclarStats
+channels:
+  - defaults
+dependencies:
+  - numpy
+  - scipy
+  - matplotlib
+  - scikit
+  - python=3.6.9
+  - scikit-learn

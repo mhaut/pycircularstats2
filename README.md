@@ -1,7 +1,8 @@
 ## PyCircularStats: Circular Statistics in Python
 
-
-![pycircstats](https://github.com/mhaut/pycircularstats/blob/master/images/pycircstats.png)
+<p align="center">
+<img src="https://github.com/mhaut/pycircularstats/blob/master/images/pycircstats.png" width="400">
+</p>
 
 ### Example of use
 ```
@@ -17,8 +18,7 @@ conda env create -f enviroment.yml
 ```
 
 ### Run examples
-Go to examples folder and run
 ```
-# Training from scratch
+cd examples
 python example.py
 ```

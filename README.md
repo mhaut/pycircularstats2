@@ -6,17 +6,17 @@
 
 ### Example of use
 ```
-# With python installer
-git clone https://github.com/mhaut/pycircularstats/
-cd pycircularstats
-python setup.py install --user
-
-OR
-
 # With conda installer (recommended)
 git clone https://github.com/mhaut/pycircularstats/
 cd pycircularstats
 conda env create -f enviroment.yml
+python setup.py install --user
+
+OR
+
+# With python installer
+git clone https://github.com/mhaut/pycircularstats/
+cd pycircularstats
 python setup.py install --user
 ```
 

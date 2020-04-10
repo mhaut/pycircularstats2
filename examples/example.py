@@ -7,8 +7,11 @@ import numpy as np
 
 
 def main():
+    path = '../datasets/MeasuredRealData.txt'
+    data = pyCfileIO.loaddata(path, typedata='cartesian')
     path = '../datasets/RectangularData.txt'
-    data = pyCfileIO.loaddata(path, typedata=2)
+    data = pyCfileIO.loaddata(path, typedata='incremental')
+
     modules = data[:,0]
     azimuths = data[:,1]
     values = pyCmath.allmodulestatistics(data[:,0], ndig = 4)

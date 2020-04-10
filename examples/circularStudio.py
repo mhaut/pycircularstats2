@@ -48,9 +48,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_Form):
         fpath = PyQt5.QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', 
             '../datasets',"Image files (*.txt)")[0]
         if fpath:
-            if   self.type1.isChecked(): typeF = 1
-            elif self.type2.isChecked(): typeF = 2
-            elif self.type3.isChecked(): typeF = 3
+            if   self.type0.isChecked(): typeF = 'cartesian'
+            elif self.type1.isChecked(): typeF = 'incremental'
+            elif self.type2.isChecked(): typeF = 'polar'
+            elif self.type3.isChecked(): typeF = 'vectors'
             else:
                 self.show_message("ERROR", "select type")
             try:

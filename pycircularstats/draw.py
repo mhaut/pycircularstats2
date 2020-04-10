@@ -35,26 +35,25 @@ def drawdistribution(azimuths):
     data_x = list()
     data_y = list()
     his = pyCmath.histogram(azimuths, 1)
-    cbase = int(max(his[:,0]) / 33) + 1       # number of elements for each point in the plot
-    d1 = 21
-    length = 23.5 + 1		# fixed circumference radius and plot width and heigth
+    cbase = max(his[:,0]) // 33 + 1       # number of elements for each point in the plot
+    d1 = 20
 
     for i in range(360):
-        h = int(his[i,0] / float(cbase))  # elements/point as a function of absolute frequency of 10 classes
+        h = his[i,0] // cbase  # elements/point as a function of absolute frequency of 10 classes
         if h > 0:
-            for g in range(h):
+            for g in range(int(h)):
                 radian = np.radians(90 - i)
-                x = np.cos(radian) * (d1 - ((d1 * 0.025) * g))
-                y = np.sin(radian) * (d1 - ((d1 * 0.025) * g))
+                x = np.cos(radian) * (d1 - ((d1 * 0.05) * g))
+                y = np.sin(radian) * (d1 - ((d1 * 0.05) * g))
                 data_x.append(x)
                 data_y.append(y)
-    n, module, theta, _ = pyCconvert.getpolarvalues(scale_factor,np.array(data_x),np.array(data_y))
-    fig, ax = creategraphicpolar(n, length)
+    n, module, theta, _ = pyCconvert.getpolarvalues(scale_factor,np.array(data_x), np.array(data_y))
+    fig, ax = creategraphicpolar(n, d1 * 1.2)
     ax.plot(theta,module,'o', color='b',markersize=5)
     azimuth = pyCmath.averageazimuth(azimuths)
     radian = np.radians(90 - azimuth)
-    x = np.cos(radian) * (d1 + (d1 * 0.1))
-    y = np.sin(radian) * (d1 + (d1 * 0.1))
+    x = np.cos(radian) * (d1 + d1 * 0.1)
+    y = np.sin(radian) * (d1 + d1 * 0.1)
     vm = pyCmath.vonmisesparameter(azimuths)
     if vm >= 0.9:
         ax.annotate("",
@@ -111,7 +110,7 @@ def drawmoduleandazimuthdistribution(data_x, data_y):
 
     with plt.style.context(STYLE_MATPLOTLIB):
         avg = np.average
-        fig, ax = creategraphicpolar(data_x.shape[0], length_)
+        fig, ax = creategraphicpolar(data_x.shape[0], length_*1.2)
         for dx,dy in zip(theta, module):
             ax.annotate("",
             xy=(dx, dy), xycoords='data',
@@ -133,16 +132,14 @@ def drawmoduleandazimuthdistribution(data_x, data_y):
 
 def drawhistogram(azimuths, classSize = 15, changeStype=True):
     his  = pyCmath.histogram(azimuths, classSize)
-    max_ = max(his[:, 1]) * 105
-    d1 = round(max_)
-    length_ = d1 * 1.2
+    d1 = round(max(his[:, 1]) * 105)
 
     theta = np.linspace(0.0, 2 * np.pi, his.shape[0], endpoint=False)
     radii = his[:,1] * 100
     width = (2*np.pi) / his.shape[0]
     
     with plt.style.context('dark_background'):
-        fig, ax = creategraphicpolar(azimuths.shape[0], length_)
+        fig, ax = creategraphicpolar(azimuths.shape[0], d1 * 1.2)
         bars = ax.bar(theta, radii, width=width, bottom=0.0)
         if changeStype:
             for r, bar in zip(radii, bars):
@@ -172,15 +169,13 @@ def drawPoints(data_x, data_y, outlier_percent = 0.05):
     assert outlier_percent < 1
     scale_factor = 1
     module = np.sqrt(data_x**2 + data_y**2)
-    theta = np.arctan2(data_x,data_y)
-    maxlen = np.max(module) + 10
+    theta = np.arctan2(data_x, data_y)
     cant = int(module.shape[0] * outlier_percent)
     inds = np.argsort(-module)
     module = -np.sort(-module)
     theta = theta[inds]
-
     with plt.style.context(STYLE_MATPLOTLIB):
-        fig, ax = creategraphicpolar(data_x.shape[0], maxlen)
+        fig, ax = creategraphicpolar(data_x.shape[0], np.max(module) * 1.2)
         ax.plot(theta[cant:],module[cant:],'o', color='b',markersize=5)
         ax.plot(theta[:cant],module[:cant],'o', color='r',markersize=5)
     return ax.get_figure()
@@ -188,64 +183,25 @@ def drawPoints(data_x, data_y, outlier_percent = 0.05):
 
 def drawdensityMap(data_x, data_y, outlier_percent = 0.05, paintpoint = False,
                     bandwidth = 20, harmonicmean = False):
-
     x, y, z = pyCmath.kde2D(data_x, data_y, bandwidth)
-
-    fig, ax = plt.subplots(1,1, dpi=DPIEXPORT)
-    plt.set_cmap('jet')
-    ax.set_title("Density map\nSample size, n = "+str(data_x.shape[0]), va='bottom')
-    cb = plt.colorbar(ax.pcolor(x,y,z))
-    cb.ax.set_ylabel('Probability density')
-
     if paintpoint:
         harmonicmean = False
         data = np.stack((data_x, data_y), axis=1)
-        Vec = pyCmath.allharmonicMean(data).reshape(-1) if harmonicmean \
-            else pyCconvert.vectors2polar(data)[:,0]
+        if harmonicmean: Vec = pyCmath.allharmonicMean(data).reshape(-1)
+        else: Vec = pyCconvert.vectors2polar(data)[:,0]
         # efficient order
         data = data[np.argsort(Vec)]
         cant = int(data_x.shape[0] * outlier_percent)
-        ax.plot(data[:-cant,0],data[:-cant,1],'o', mfc='black',mec='k')
-        ax.plot(data[-cant:,0],data[-cant:,1],'o', mfc='red',mec='k')
-    return ax.get_figure()
-
-
-def drawVectors(data,scaleVector=None):
-    xini = data[:,0]
-    yini = data[:,1]
-    xfin = data[:,2]
-    yfin = data[:,3]
-
-    if scaleVector != None:
-        xaux = xfin - xini
-        yaux = yfin - yini
-        xaux *= scaleVector
-        yaux *= scaleVector
-        xfin = xaux + xini
-        yfin = yaux + yini
-
-    xmin = min(np.min(xini), np.min(xfin))
-    xmax = max(np.max(xini), np.max(xfin))
-    ymin = min(np.min(yini), np.min(yfin))
-    ymax = max(np.max(yini), np.max(yfin))
 
     with plt.style.context(STYLE_MATPLOTLIB):
-        fig = plt.figure(dpi = DPIEXPORT)
-        ax = fig.add_subplot(111)
-        ax.set_xlim(xmin, xmax)
-        ax.set_ylim(ymin, ymax)
-        for i in range(len(xini)):
-            valueScale = 0.3
-            style = "->, head_width="+str(valueScale)+", head_length="+str(valueScale)
-            ax.annotate("",
-            xy=(xfin[i], yfin[i]), xycoords='data',
-            xytext=(xini[i], yini[i]), textcoords='data',
-            arrowprops=dict(arrowstyle=style,
-                            connectionstyle="arc3",edgecolor='red',
-                            linewidth = 1,
-                            ),
-            )
-        ax.set_title("Sample size, n = "+str(len(xini)), va='bottom')
+        fig, ax = plt.subplots(1,1, dpi=DPIEXPORT)
+        plt.set_cmap('jet')
+        ax.set_title("Density map\nSample size, n = "+str(data_x.shape[0]), va='bottom')
+        cb = plt.colorbar(ax.pcolor(x,y,z))
+        cb.ax.set_ylabel('Probability density')
+        if paintpoint:
+            ax.plot(data[:-cant,0],data[:-cant,1],'o', mfc='lightblue',mec='k')
+            ax.plot(data[-cant:,0],data[-cant:,1],'o', mfc='firebrick',mec='k')
     return ax.get_figure()
 
 
@@ -273,5 +229,25 @@ def drawqqplot(azimuths):
         ax.set_title("QQ plot")
         ax.grid(True)
         ax.plot(z[:,0],z[:,1],'o')
+        ax.set_xlim(np.min(z[:,0])*1.1, np.max(z[:,0])*1.1)
+        ax.set_ylim(np.min(z[:,1])*1.1, np.max(z[:,1])*1.1)
     return ax.get_figure()
 
+
+def drawVectors(data,scaleVector=None):
+    with plt.style.context(STYLE_MATPLOTLIB):
+        fig = plt.figure(dpi = DPIEXPORT)
+        ax = fig.add_subplot(111)
+        for i in range(len(data[:,0])):
+            valueScale = 0.3
+            style = "->, head_width="+str(valueScale)+", head_length="+str(valueScale)
+            ax.annotate("",
+            xy=(data[:,2][i], data[:,3][i]), xycoords='data',
+            xytext=(data[:,0][i], data[:,1][i]), textcoords='data',
+            arrowprops=dict(arrowstyle=style,
+                            connectionstyle="arc3",edgecolor='red',
+                            linewidth = 1,
+                            ),
+            )
+        ax.set_title("Sample size, n = "+str(len(data[:,0])), va='bottom')
+    return ax.get_figure()

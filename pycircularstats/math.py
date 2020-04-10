@@ -294,8 +294,8 @@ def kde2D(x, y, bandwidth, xbins=200j, ybins=200j, **kwargs):
     """Build 2D kernel density estimate (KDE)."""
 
     # create grid of sample locations (default: 200x200)
-    xx, yy = np.mgrid[x.min():x.max():xbins, 
-                        y.min():y.max():ybins]
+    xx, yy = np.mgrid[x.min()*1.1:x.max()*1.1:xbins, 
+                        y.min()*1.1:y.max()*1.1:ybins]
 
     xy_sample = np.vstack([yy.ravel(), xx.ravel()]).T
     xy_train  = np.vstack([y, x]).T
@@ -306,17 +306,3 @@ def kde2D(x, y, bandwidth, xbins=200j, ybins=200j, **kwargs):
     # score_samples() returns the log-likelihood of the samples
     z = np.exp(kde_skl.score_samples(xy_sample))
     return xx, yy, np.reshape(z, xx.shape)
-
-#def get_values_kernel(data_x, data_y, limits)
-    #[minx, maxx, miny, maxy] = limits
-    #xx, yy = np.mgrid[minx-offsetLimit:maxx+offsetLimit:100j, miny-offsetLimit:maxy+offsetLimit:100j]
-    ##xx, yy = np.mgrid[minx-30:maxx+30:100j, miny-30:maxy+30:100j]
-    #positions = np.vstack([xx.ravel(), yy.ravel()])
-    #values = np.vstack([data_x, data_y])
-    #kernel = sp_stats.gaussian_kde(values)
-    ## evaluate the estimated PDF on a grid
-    #x = xx
-    #y = yy
-    #z = kernel((x.ravel(),y.ravel())).reshape(*x.shape)
-
-    #return x, y, z

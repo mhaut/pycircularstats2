@@ -16,7 +16,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_Form):
         self.sceneGrahics = PyQt5.QtWidgets.QGraphicsScene()
         self.graphicsView.setScene(self.sceneGrahics)
         pyCdraw.DPIEXPORT = 81
-
+        #print(self.imageicono.geometry())
+        #self.imageicono.setPixmap(QtGui.QPixmap('../images/logo.png').scaled(202,191, QtCore.Qt.KeepAspectRatio))
         self.buttonload.clicked.connect(self.load_data)
         self.calculate.clicked.connect(self.exec_func)
 
@@ -45,6 +46,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_Form):
             self.showMessageInView("ERROR: No information wind in region")
 
     def load_data(self):
+        print(self.imageicono.geometry())
         fpath = PyQt5.QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', 
             '../datasets',"Image files (*.txt)")[0]
         if fpath:
@@ -134,4 +136,7 @@ if __name__ == "__main__":
         app = QtWidgets.QApplication([])
     window = MainWindow()
     window.show()
+    w = window.imageicono.geometry().width()
+    h = window.imageicono.geometry().height()
+    window.imageicono.setPixmap(QtGui.QPixmap('../images/logo.png').scaled(w,h, QtCore.Qt.KeepAspectRatio))
     app.exec_()

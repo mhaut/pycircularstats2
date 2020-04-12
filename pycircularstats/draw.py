@@ -106,7 +106,7 @@ def drawmoduleandazimuthdistribution(data_x, data_y):
     num_data = data_x.shape[0]
     module   = np.sqrt(data_x**2 + data_y**2)
     theta    = np.arctan2(data_x, data_y)
-    length_  = np.max(module) + 10
+    length_  = np.max(module)
 
     with plt.style.context(STYLE_MATPLOTLIB):
         avg = np.average
@@ -138,8 +138,8 @@ def drawhistogram(azimuths, classSize = 15, changeStype=True):
     radii = his[:,1] * 100
     width = (2*np.pi) / his.shape[0]
     
-    with plt.style.context('dark_background'):
-        fig, ax = creategraphicpolar(azimuths.shape[0], d1 * 1.2)
+    with plt.style.context(STYLE_MATPLOTLIB):
+        fig, ax = creategraphicpolar(azimuths.shape[0], d1)
         bars = ax.bar(theta, radii, width=width, bottom=0.0)
         if changeStype:
             for r, bar in zip(radii, bars):
@@ -154,6 +154,7 @@ def drawhistogram(azimuths, classSize = 15, changeStype=True):
             azimuth = pyCmath.averageazimuth(azimuths)
             x = np.cos(np.radians(90 - azimuth)) * (d1 * 1.1)
             y = np.sin(np.radians(90 - azimuth)) * (d1 * 1.1)
+            if d1 < np.sqrt(x**2 + y**2): ax.set_rlim(0, np.sqrt(x**2 + y**2)+1.1)
             ax.annotate("",
                         xy=(np.arctan2(x, y), np.sqrt(x**2 + y**2)), xycoords='data',
                         xytext=(0.0, 0.0), textcoords='data',

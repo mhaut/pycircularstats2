@@ -1,3 +1,9 @@
+datasets/ErrorLandsat.txt
+datasets/OrtoImagen2003_CC.txt
+examples/paper.py
+examples/pruebas_paper.zip
+examples/pruebas_paper/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

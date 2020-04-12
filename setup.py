@@ -22,7 +22,7 @@ VERSION = '0.1.0'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    'numpy', 'scipy', 'matplotlib', 'scikit-learn', 'pyqt5',
+    'numpy', 'scipy', 'matplotlib', 'scikit-learn',
 ]
 
 # What packages are optional?

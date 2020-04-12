@@ -18,6 +18,8 @@ OR
 git clone https://github.com/mhaut/pycircularstats/
 cd pycircularstats
 python setup.py install --user
+sudo apt-get install python3-pyqt5 (Ubuntu)
+bre install pyqt (MacOS)
 ```
 
 ### Run Circular Visual Statistics

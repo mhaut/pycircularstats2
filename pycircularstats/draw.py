@@ -241,16 +241,24 @@ def drawqqplot(azimuths):
     return ax.get_figure()
 
 
-def drawVectors(data,scaleVector=None):
+def drawVectors(data, scaleVector=None):
+    xini = data[:,0]; yini = data[:,1]
+    xfin = data[:,2]; yfin = data[:,3]
+    xmin = min(np.min(xini), np.min(xfin))
+    xmax = max(np.max(xini), np.max(xfin))
+    ymin = min(np.min(yini), np.min(yfin))
+    ymax = max(np.max(yini), np.max(yfin))
     with plt.style.context(STYLE_MATPLOTLIB):
         fig = plt.figure(dpi = DPIEXPORT)
         ax = fig.add_subplot(111)
+        ax.set_xlim(xmin, xmax)
+        ax.set_ylim(ymin, ymax)
         for i in range(len(data[:,0])):
-            valueScale = 0.3
+            valueScale = 0.2
             style = "->, head_width="+str(valueScale)+", head_length="+str(valueScale)
             ax.annotate("",
-            xy=(data[:,2][i], data[:,3][i]), xycoords='data',
-            xytext=(data[:,0][i], data[:,1][i]), textcoords='data',
+            xy=(xfin[i], yfin[i]), xycoords='data',
+            xytext=(xini[i], yini[i]), textcoords='data',
             arrowprops=dict(arrowstyle=style,
                             connectionstyle="arc3",edgecolor='red',
                             linewidth = 1,

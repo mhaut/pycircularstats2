@@ -121,12 +121,18 @@ def drawmoduleandazimuthdistribution(data_x, data_y):
                             ),
             )
         avg = np.average
+        arrv = np.sqrt(avg(data_x)**2 + avg(data_y)**2)
+        arrv /= (length_*0.25)
+        arrv = 1 if arrv*2>1 else arrv
+        lwid = np.min([2.5, arrv * 5])
         ax.annotate("",
                     xy=(np.arctan2(avg(data_x), avg(data_y)), \
                         np.sqrt(avg(data_x)**2 + avg(data_y)**2)), \
                     xycoords='data', xytext=(0, 0), textcoords='data',
-                    arrowprops=dict(arrowstyle="->, head_width=1, head_length=1",
-                    connectionstyle="arc3",edgecolor='red', linewidth = 2.5))
+                    #arrowprops=dict(arrowstyle="->, head_width=0.3, head_length=0.3",
+                    #connectionstyle="arc3",edgecolor='red', linewidth = 2))
+                    arrowprops=dict(arrowstyle="->, head_width="+str(arrv)+", head_length="+str(arrv),
+                    connectionstyle="arc3",edgecolor='red', linewidth = lwid))
     return ax.get_figure()
 
 

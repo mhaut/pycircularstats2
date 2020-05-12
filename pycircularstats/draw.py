@@ -241,9 +241,11 @@ def drawqqplot(azimuths):
     return ax.get_figure()
 
 
-def drawVectors(data, scaleVector=None):
+def drawVectors(data, scaleVector=None, zoomed_points=[]):
+    #data = data[[2,3,24],:]
     xini = data[:,0]; yini = data[:,1]
     xfin = data[:,2]; yfin = data[:,3]
+    #xfin = data[:,2]*1.0001; yfin = data[:,3]*1.0001
     xmin = min(np.min(xini), np.min(xfin))
     xmax = max(np.max(xini), np.max(xfin))
     ymin = min(np.min(yini), np.min(yfin))
@@ -264,5 +266,31 @@ def drawVectors(data, scaleVector=None):
                             linewidth = 1,
                             ),
             )
-        ax.set_title("Sample size, n = "+str(len(data[:,0])), va='bottom')
+    if zoomed_points:
+        listapoints = data[zoomed_points,:4]
+        print(listapoints)
+        x1 = np.min(listapoints[:,[0,2]]); x2 = np.max(listapoints[:,[0,2]])
+        y1 = np.min(listapoints[:,[1,3]]); y2 = np.max(listapoints[:,[1,3]])
+        from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes, mark_inset
+        axins = zoomed_inset_axes(ax, 30, loc=2, borderpad=1) # zoom-factor: 2.5, location: upper-left
+        mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")
+        #x1, x2, y1, y2 = 726045, 726060, 4372710, 4372757 # specify the limits
+        axins.set_xlim(x1, x2) # apply the x-limits
+        axins.set_ylim(y1, y2) # apply the y-limits
+        plt.yticks(visible=False)
+        plt.xticks(visible=False)
+
+        for i in zoomed_points:
+            valueScale = 0.2
+            style = "->, head_width="+str(valueScale)+", head_length="+str(valueScale)
+            axins.annotate("",
+            xy=(xfin[i], yfin[i]), xycoords='data',
+            xytext=(xini[i], yini[i]), textcoords='data',
+            arrowprops=dict(arrowstyle=style,
+                            connectionstyle="arc3",edgecolor='blue',
+                            linewidth = 1,
+                            ),
+            )
+    ax.set_title("Sample size, n = "+str(len(data[:,0])), va='bottom')
+
     return ax.get_figure()

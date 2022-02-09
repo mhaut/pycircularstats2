@@ -5,10 +5,11 @@ import pycircularstats.convert as pyCconvert
 
 
 
+# def readfromfile(path):
+#     vector = [line[:-1].split('\t') for line in open(path, 'r')]
+#     return np.array(vector).astype("float")
 def readfromfile(path):
-    vector = [line[:-1].split('\t') for line in open(path, 'r')]
-    return np.array(vector).astype("float")
-
+    return np.loadtxt(path, delimiter='\t')
 
 def correct_type(typedata, data):
     if   typedata == 'cartesian' and data.shape[1] == 4: return True

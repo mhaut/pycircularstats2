@@ -6,8 +6,8 @@ import pycircularstats.convert as pyCconvert
 
 
 def readfromfile(path):
-    vector = [line[:-1].split('\t') for line in open(path, 'r')]
-    return np.array(vector).astype("float")
+    vector = np.loadtxt(path, delimiter='\t')
+    return vector
 
 
 def correct_type(typedata, data):

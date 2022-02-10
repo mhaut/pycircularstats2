@@ -13,6 +13,11 @@ def vectors2rectangular(vectors):
     rectangular_vectors[:, 1] = np.cos(np.radians(grades)) * module
     return rectangular_vectors
 
+def vectors2rectangularMAP(module, grades):
+    rectangular_vectors = []
+    rectangular_vectors.append(np.sin(np.radians(grades)) * module)
+    rectangular_vectors.append(np.cos(np.radians(grades)) * module)
+    return rectangular_vectors
 
 def vectors2polar(vectors):
     num_data = vectors.shape[0]

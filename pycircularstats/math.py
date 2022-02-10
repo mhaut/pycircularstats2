@@ -204,7 +204,7 @@ def raotest(azimuths, alpha=0.01):
         if alpha not in alphas:
             string = "  Alphas value are restricted to \n 0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 0.9"
         else:
-            value = tableraoII[trow, alphas.index(alpha)]
+            value = tableraoII[trow-1, alphas.index(alpha)]
             if value >= L: string = "  Rao Test. the hypothesis of uniformity \n  is accepted for P = " + str(alpha)
             else: string = "  Rao Test: the hypothesis of uniformity \n  is rejected for P = " + str(alpha)
     else:

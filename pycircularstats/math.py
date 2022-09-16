@@ -16,19 +16,22 @@ def histogram(vectors, n_classes):
     return np.hstack((abs_his.reshape(n_classes,1), rel_his.reshape(n_classes,1)))
 
 
+#https://en.wikipedia.org/wiki/Circular_mean
 def averageazimuth(azimuths):
+    print("azimuth degrees", azimuths)
     radians = np.radians(azimuths)
-    sin_ = np.sum(np.sin(radians))
-    cos_ = np.sum(np.cos(radians))
+    sin_ = np.average(np.sin(radians))
+    cos_ = np.average(np.cos(radians))
     azimuth = np.arctan(sin_/cos_)
-    azimuth = np.degrees(azimuth)
+    print("azimuth", azimuth)
+    #azimuth = np.degrees(azimuth)
     if sin_ > 0 and cos_ > 0:
         pass
-    elif cos_ < 0 and sin_ != 0:
-        azimuth += 180
+    elif cos_ < 0:
+        azimuth += np.pi
     elif sin_ < 0 and cos_ > 0:
-        azimuth += 360
-    return(azimuth)
+        azimuth += (2*np.pi)
+    return np.degrees(azimuth)
 
 def vonmisesparameter(azimuths):
     n_elements   = azimuths.shape[0]

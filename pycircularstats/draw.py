@@ -36,32 +36,49 @@ def drawdistribution(azimuths):
     data_y = list()
     his = pyCmath.histogram(azimuths, 1)
     cbase = max(his[:,0]) // 33 + 1       # number of elements for each point in the plot
+    #print("cbase", cbase)
+    #cbase = 2
     d1 = 20
 
+    vals2mult = []
     for i in range(360):
         h = his[i,0] // cbase  # elements/point as a function of absolute frequency of 10 classes
         if h > 0:
-            for g in range(int(h)):
-                radian = np.radians(90 - i)
-                x = np.cos(radian) * (d1 - ((d1 * 0.05) * g))
-                y = np.sin(radian) * (d1 - ((d1 * 0.05) * g))
+            for g in range(1,int(h)):
+                radian = np.radians(i)
+                x = np.cos(radian) * (d1 - ((d1 * 0.025) * g))
+                y = np.sin(radian) * (d1 - ((d1 * 0.025) * g))
                 data_x.append(x)
                 data_y.append(y)
-    n, module, theta, _ = pyCconvert.getpolarvalues(scale_factor,np.array(data_x), np.array(data_y))
-    fig, ax = creategraphicpolar(n, d1 * 1.2)
-    ax.plot(theta,module,'o', color='b',markersize=5)
+    n, module, theta, _ = pyCconvert.getpolarvalues(scale_factor, np.array(data_x), np.array(data_y))
+    fig, ax = creategraphicpolar(len(azimuths), d1*1.2)
+    #ax.plot(np.radians(theta), module,'o', color='b',markersize=5)
+    #ax.plot(data_y, data_x,'o', color='b',markersize=5)
+    #ax.plot(theta, len(theta)*[20],'o', color='b',markersize=5)
+    ax.scatter(theta, module, color='b')
+    #ax.scatter(data_y, data_x, color='b')
     azimuth = pyCmath.averageazimuth(azimuths)
-    radian = np.radians(90 - azimuth)
-    x = np.cos(radian) * (d1 + d1 * 0.1)
-    y = np.sin(radian) * (d1 + d1 * 0.1)
+    #print("azimuthazimuthazimuthazimuth",azimuth)
+    #radian = np.radians(90 - azimuth)
+    radian = np.radians(azimuth)
+    x = np.cos(radian) * (d1 + 1.1)
+    y = np.sin(radian) * (d1 + 1.1)
     vm = pyCmath.vonmisesparameter(azimuths)
+    print("vmvmvmvm",vm)
     if vm >= 0.9:
+        print(np.degrees(np.arctan(y / x)), np.sqrt(x**2 + y**2))
         ax.annotate("",
-                    xy=(np.arctan2(x, y), np.sqrt(x**2 + y**2)), xycoords='data',
+                    xy=(np.arctan(y / x), np.sqrt(x**2 + y**2)), xycoords='data',
                     xytext=(0, 0), textcoords='data',
                     arrowprops=dict(arrowstyle="->, head_width=1, head_length=1",
                                     connectionstyle="arc3",edgecolor='red',
                                     linewidth = 3))
+        #ax.annotate("",
+                    #xy=(pyCmath.averageazimuth(np.degrees(theta)), np.average(module)), xycoords='data',
+                    #xytext=(0, 0), textcoords='data',
+                    #arrowprops=dict(arrowstyle="->, head_width=1, head_length=1",
+                                    #connectionstyle="arc3",edgecolor='red',
+                                    #linewidth = 3))
     else:
         print("Concentration is low, the mean azimuth is not drawn")
     # confidence interval
@@ -104,14 +121,18 @@ def drawmoduleandazimuthdistribution(data_x, data_y):
     #   Plot the graphic and/or save the graphic as SVG
     #
     num_data = data_x.shape[0]
-    module   = np.sqrt(data_x**2 + data_y**2)
-    theta    = np.arctan2(data_x, data_y)
+    #module   = np.sqrt(data_x**2 + data_y**2)
+    #theta    = np.arctan2(data_x,data_y)
+    #theta    = np.arctan2(data_y, data_x)
+    [module, theta] = pyCconvert.vectors2polar(np.stack((data_x, data_y), axis=1)).T
+    #theta    = np.arctan(np.average(np.sin(np.radians(azimuths))) / np.average(np.cos(np.radians(azimuths))))
     length_  = np.max(module)
 
     with plt.style.context(STYLE_MATPLOTLIB):
         avg = np.average
         fig, ax = creategraphicpolar(data_x.shape[0], length_*1.2)
-        for dx,dy in zip(theta, module):
+        print(np.unique(theta, return_counts=1))
+        for dx,dy in zip(np.radians(theta), module):
             ax.annotate("",
             xy=(dx, dy), xycoords='data',
             xytext=(0.0, 0.0), textcoords='data',
@@ -120,19 +141,32 @@ def drawmoduleandazimuthdistribution(data_x, data_y):
                             linewidth = 1
                             ),
             )
+            #ax.plot((0, dx), (0, dy), color='blue', linewidth=2, zorder=3)
+            #ax.arrow(0,0,dx,dy)
         avg = np.average
         arrv = np.sqrt(avg(data_x)**2 + avg(data_y)**2)
         arrv /= (length_*0.25)
         arrv = 1 if arrv*2>1 else arrv
         lwid = np.min([2.5, arrv * 5])
+        #print("-----", (np.arctan2(avg(data_x), avg(data_y)), np.sqrt(avg(data_x)**2 + avg(data_y)**2)))
+        ###ax.annotate("",
+                    ###xy=(np.arctan2(avg(data_y), avg(data_x)), \
+                        ###np.sqrt(avg(data_x**2) + avg(data_y**2))), \
+                    ###xycoords='data', xytext=(0, 0), textcoords='data',
+                    ####arrowprops=dict(arrowstyle="->, head_width=0.3, head_length=0.3",
+                    ####connectionstyle="arc3",edgecolor='red', linewidth = 2))
+                    ###arrowprops=dict(arrowstyle="->, head_width="+str(arrv)+", head_length="+str(arrv),
+                    ###connectionstyle="arc3",edgecolor='red', linewidth = lwid))
+        #print("np.average(theta)", np.average(theta))
         ax.annotate("",
-                    xy=(np.arctan2(avg(data_x), avg(data_y)), \
-                        np.sqrt(avg(data_x)**2 + avg(data_y)**2)), \
-                    xycoords='data', xytext=(0, 0), textcoords='data',
-                    #arrowprops=dict(arrowstyle="->, head_width=0.3, head_length=0.3",
-                    #connectionstyle="arc3",edgecolor='red', linewidth = 2))
-                    arrowprops=dict(arrowstyle="->, head_width="+str(arrv)+", head_length="+str(arrv),
-                    connectionstyle="arc3",edgecolor='red', linewidth = lwid))
+                    xy=(np.radians(pyCmath.averageazimuth(theta)), np.average(module)),
+                        xycoords='data', xytext=(0, 0), textcoords='data',
+                        arrowprops=dict(arrowstyle="->, head_width="+str(arrv)+", head_length="+str(arrv),
+                                        connectionstyle="arc3",edgecolor='red', linewidth = lwid))
+        #dx = np.arctan2(avg(data_y), avg(data_x))
+        #dy = np.sqrt(avg(data_x)**2 + avg(data_y)**2)
+        #ax.plot((0, dx), (0, dy), color='red', linewidth=2, zorder=3)
+        #ax.arrow(0,0,dx,dy)
     return ax.get_figure()
 
 
@@ -175,8 +209,10 @@ def drawhistogram(azimuths, classSize = 15, changeStype=True):
 def drawPoints(data_x, data_y, outlier_percent = 0.05):
     assert outlier_percent < 1
     scale_factor = 1
-    module = np.sqrt(data_x**2 + data_y**2)
-    theta = np.arctan2(data_x, data_y)
+    #module = np.sqrt(data_x**2 + data_y**2)
+    #theta = np.arctan2(data_x, data_y)
+    #theta = np.arctan2(data_y, data_x)
+    [module, theta] = pyCconvert.vectors2polar(np.stack((data_x, data_y), axis=1)).T
     cant = int(module.shape[0] * outlier_percent)
     inds = np.argsort(-module)
     module = -np.sort(-module)

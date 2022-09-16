@@ -15,8 +15,8 @@ def vectors2rectangular(vectors):
 
 def vectors2rectangularMAP(module, grades):
     rectangular_vectors = []
-    rectangular_vectors.append(np.sin(np.radians(grades)) * module)
     rectangular_vectors.append(np.cos(np.radians(grades)) * module)
+    rectangular_vectors.append(np.sin(np.radians(grades)) * module)
     return rectangular_vectors
 
 def vectors2polar(vectors):
@@ -24,15 +24,14 @@ def vectors2polar(vectors):
     x = vectors[:,0]
     y = vectors[:,1]
     module = np.sqrt(x**2 + y**2)
-    grades = np.degrees(np.arctan2(x,y))
+    grades = np.degrees(np.arctan2(y,x))
     grades[grades<0] += 360
     polar_vectors = np.array([module, grades]).T
     return polar_vectors
 
 
 def getpolarvalues(scale, data_x, data_y):
-    module = np.sqrt(data_x**2 + data_y**2)
-    theta  = np.arctan2(data_x,data_y)
+    [module, theta] = vectors2polar(np.stack((data_x, data_y), axis=1)).T
     max_   = np.max(module) + 1  
     angle_ticks = [np.round(max_ * scale * a) for a in np.arange(0.25, 1.01, 0.25)][::-1]
     return data_x.shape[0], module, theta, np.array(angle_ticks)

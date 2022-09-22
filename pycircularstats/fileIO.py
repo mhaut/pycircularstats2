@@ -4,10 +4,6 @@ import numpy as np
 import pycircularstats.convert as pyCconvert
 
 
-
-# def readfromfile(path):
-#     vector = [line[:-1].split('\t') for line in open(path, 'r')]
-#     return np.array(vector).astype("float")
 def readfromfile(path):
     return np.loadtxt(path, delimiter='\t')
 
@@ -40,7 +36,6 @@ def data2res(typedata, data):
 def loaddata(path, typedata = 'incremental'):
     if not path:
         print('error, not path file')
-        #exit()
         return None
     data = readfromfile(path)
     if data.shape[0] > 1:
@@ -49,16 +44,13 @@ def loaddata(path, typedata = 'incremental'):
             print("Error, format selected is not avaiable")
             print(TYPES_AVAIL)
             return None
-            #exit()
         elif correct_type(typedata, data) == False:
             print("Error, the file is not in the correct format.")
             return None
-            #exit()
         else:
             return data2res(typedata, data)
     else:
         print("Error, in read file, check it!")
-        #exit() 
         return None
 
 

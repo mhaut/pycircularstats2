@@ -56,17 +56,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_Form):
             elif self.type3.isChecked(): typeF = 'vectors'
             else:
                 self.show_message("ERROR", "select type")
-            try:
-                self.data = pyCfileIO.loaddata(fpath, typedata=typeF)
-                self.modules  = self.data[:,0]
-                self.azimuths = self.data[:,1]
-                self.X_coordinate = self.data[:,2]
-                self.Y_coordinate = self.data[:,3]
-                fname = fpath.split("/")[-1]
-                self.labelpath.setText(fname)
-                self.calculate.setEnabled(True)
-            except:
-                self.show_message("ERROR", "invalid text format")
+            #try:
+            self.data = pyCfileIO.loaddata(fpath, typedata=typeF)
+            self.modules  = self.data[:,0]
+            self.azimuths = self.data[:,1]
+            self.X_coordinate = self.data[:,2]
+            self.Y_coordinate = self.data[:,3]
+            fname = fpath.split("/")[-1]
+            self.labelpath.setText(fname)
+            self.calculate.setEnabled(True)
+            #except:
+                #self.show_message("ERROR", "invalid text format")
 
 
     def exec_func(self):

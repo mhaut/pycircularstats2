@@ -4,19 +4,26 @@ import numpy as np
 
 
 
-def vectors2rectangular(vectors):
-    res = np.zeros((vectors.shape[0],9))
-    rectangular_vectors = vectors
+def vectors2rectangular(vectors, init=0):
+    rectangular_vectors = np.zeros((vectors.shape))
     module  = vectors[:, 0]
     grades  = vectors[:, 1]
-    rectangular_vectors[:, 0] = np.sin(np.radians(grades)) * module
-    rectangular_vectors[:, 1] = np.cos(np.radians(grades)) * module
+    val1 = np.degrees(np.cos(np.radians(grades))) * module # x
+    val2 = np.degrees(np.sin(np.radians(grades))) * module # y
+    rectangular_vectors[:, 0] = val1 if init == 0 else val2
+    rectangular_vectors[:, 1] = val2 if init == 0 else val1
     return rectangular_vectors
 
+#def vectors2rectangularMAP(module, grades):
+    #rectangular_vectors = []
+    #rectangular_vectors.append(np.cos(np.radians(grades)) * module)
+    #rectangular_vectors.append(np.sin(np.radians(grades)) * module)
+    #return rectangular_vectors
+
 def vectors2rectangularMAP(module, grades):
-    rectangular_vectors = []
-    rectangular_vectors.append(np.cos(np.radians(grades)) * module)
-    rectangular_vectors.append(np.sin(np.radians(grades)) * module)
+    rectangular_vectors = np.ones((len(modules), 2))
+    rectangular_vectors[:, 0] = np.sin(np.radians(grades)) * module
+    rectangular_vectors[:, 1] = np.cos(np.radians(grades)) * module
     return rectangular_vectors
 
 def vectors2polar(vectors):
@@ -24,7 +31,9 @@ def vectors2polar(vectors):
     x = vectors[:,0]
     y = vectors[:,1]
     module = np.sqrt(x**2 + y**2)
-    grades = np.degrees(np.arctan2(y,x))
+    #grades = np.degrees(np.arctan2(y,x))
+    grades = np.degrees(np.arctan2(x,y))
+    #grades = np.degrees(np.arctan(x/y))
     grades[grades<0] += 360
     polar_vectors = np.array([module, grades]).T
     return polar_vectors
@@ -39,8 +48,8 @@ def getpolarvalues(scale, data_x, data_y):
 
 def tocalculateincr(matrix):
     num_elements = matrix.shape[0]
-    x_coordinates = matrix[:,2] - matrix[:,0]
-    y_coordinates = matrix[:,3] - matrix[:,1]
+    x_coordinates = matrix[:,0] - matrix[:,2]
+    y_coordinates = matrix[:,1] - matrix[:,3]
     incr = np.column_stack((x_coordinates, y_coordinates))
     incr = np.reshape(np.array(incr), (num_elements, 2))
     return incr

@@ -9,8 +9,8 @@ def readfromfile(path):
 
 def correct_type(typedata, data):
     if   typedata == 'cartesian' and data.shape[1] == 4: return True
-    elif typedata == 'incremental' and data.shape[1] == 2: return True
     elif typedata == 'polar' and data.shape[1] == 2 and np.min(data) >= 0: return True
+    elif typedata == 'incremental' and data.shape[1] == 2: return True
     elif typedata == 'vectors' and data.shape[1] == 4: return True
     else: return False # not correct
 
@@ -24,8 +24,8 @@ def data2res(typedata, data):
         rectangular_vectors = data
         polar_vectors       = pyCconvert.vectors2polar(data)
     elif typedata == 'polar':
-        rectangular_vectors = pyCconvert.vectors2rectangular(data)
         polar_vectors       = data
+        rectangular_vectors = pyCconvert.vectors2rectangular(data)
     elif typedata == 'vectors':
         res[:, :4] = np.array([data[:, i] for i in range(4)]).T
         return res

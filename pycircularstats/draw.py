@@ -60,15 +60,16 @@ def drawdistribution(azimuths):
     azimuth = pyCmath.averageazimuth(azimuths)
     #print("azimuthazimuthazimuthazimuth",azimuth)
     #radian = np.radians(90 - azimuth)
+    print("azimuthazimuthazimuthazimuthazimuth", azimuth, np.average(azimuths))
     radian = np.radians(azimuth)
     x = np.cos(radian) * (d1 + 1.1)
     y = np.sin(radian) * (d1 + 1.1)
     vm = pyCmath.vonmisesparameter(azimuths)
     print("vmvmvmvm",vm)
     if vm >= 0.9:
-        print(np.degrees(np.arctan(y / x)), np.sqrt(x**2 + y**2))
+        #print(np.degrees(np.arctan2(x,y)), np.sqrt(x**2 + y**2))
         ax.annotate("",
-                    xy=(np.arctan(y / x), np.sqrt(x**2 + y**2)), xycoords='data',
+                    xy=(np.arctan2(y,x), np.sqrt(x**2 + y**2)), xycoords='data',
                     xytext=(0, 0), textcoords='data',
                     arrowprops=dict(arrowstyle="->, head_width=1, head_length=1",
                                     connectionstyle="arc3",edgecolor='red',

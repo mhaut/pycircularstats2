@@ -4,15 +4,32 @@ import numpy as np
 
 
 
-def vectors2rectangular(vectors, init=1):
+def vectors2rectangular(vectors):
+    #rectangular_vectors = vectors
     rectangular_vectors = np.zeros((vectors.shape))
-    module  = vectors[:, 0]
-    grades  = vectors[:, 1]
-    val1 = np.degrees(np.cos(np.radians(grades))) * module # x
-    val2 = np.degrees(np.sin(np.radians(grades))) * module # y
-    rectangular_vectors[:, 0] = val1 if init == 0 else val2
-    rectangular_vectors[:, 1] = val2 if init == 0 else val1
+    grades = vectors[:,1]
+    module = vectors[:,0]
+    radians = np.radians(grades)
+    x1 = np.sin(radians) * module
+    y1 = np.cos(radians) * module
+
+    rectangular_vectors[:,0] = x1
+    rectangular_vectors[:,1] = y1
     return rectangular_vectors
+
+
+#def vectors2rectangular(vectors, init=1):
+    #rectangular_vectors = np.zeros((vectors.shape))
+    #module  = vectors[:, 0]
+    #grades  = vectors[:, 1]
+    #val1 = np.degrees(np.cos(np.radians(grades))) * module # x
+    #val2 = np.degrees(np.sin(np.radians(grades))) * module # y
+    ##print(va1)
+    ##print(np.degrees(np.cos(grades)*module))
+    ##exit()
+    #rectangular_vectors[:, 0] = val1 if init == 0 else val2
+    #rectangular_vectors[:, 1] = val2 if init == 0 else val1
+    #return rectangular_vectors
 
 #def vectors2rectangularMAP(module, grades):
     #rectangular_vectors = []
@@ -41,7 +58,7 @@ def vectors2rectangularMAP(module, grades, init=1):
     #polar_vectors = np.array([module, grades]).T
     #return polar_vectors
 
-def vectors2polar(vectors):
+def vectors2polar(vectors, posX=0):
     x = vectors[:,0]
     y = vectors[:,1]
     module = np.sqrt(x**2 + y**2)

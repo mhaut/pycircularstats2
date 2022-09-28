@@ -26,6 +26,8 @@ def data2res(typedata, data):
     elif typedata == 'polar':
         polar_vectors       = data
         rectangular_vectors = pyCconvert.vectors2rectangular(data)
+        #print(rectangular_vectors)
+        #exit()
     elif typedata == 'vectors':
         res[:, :4] = np.array([data[:, i] for i in range(4)]).T
         return res

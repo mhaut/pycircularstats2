@@ -12,7 +12,6 @@ def vectors2rectangular(vectors):
     radians = np.radians(grades)
     x1 = np.sin(radians) * module
     y1 = np.cos(radians) * module
-
     rectangular_vectors[:,0] = x1
     rectangular_vectors[:,1] = y1
     return rectangular_vectors

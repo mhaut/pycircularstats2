@@ -10,7 +10,7 @@ import pycircularstats.convert as pyCconvert
 # Style sheets reference
 #https://matplotlib.org/3.1.1/gallery/style_sheets/style_sheets_reference.html
 
-DPIEXPORT = 150
+DPIEXPORT = 300
 #STYLE_MATPLOTLIB = "dark_background"
 #STYLE_MATPLOTLIB = "seaborn-deep"
 STYLE_MATPLOTLIB = "default"

@@ -107,7 +107,6 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
             if   self.type0.isChecked(): typeF = 'cartesian'
             elif self.type1.isChecked(): typeF = 'incremental'
             elif self.type2.isChecked(): typeF = 'polar'
-            elif self.type3.isChecked(): typeF = 'vectors'
             else:
                 self.show_message("ERROR", "select type")
             try:

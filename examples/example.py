@@ -31,11 +31,17 @@ def main():
         plt.show()
         pyCdraw.drawPoints(X_coordinate, Y_coordinate, outlier_percent = 0.08)
         plt.show()
-        exit()
         pyCdraw.drawdensityMap(X_coordinate, Y_coordinate, bandwidth=10, paintpoint = True)
         plt.show()
         pyCdraw.drawqqplot(azimuths)
         plt.show()
+        vectors = data[:,4:8]
+        if np.sum(np.abs(vectors)) == 0:
+            print("CARTESIAN DATA NOT FOUND!")
+        else:
+            pyCdraw.drawVectors(vectors)
+            plt.show()
+            
 
 
 if __name__ == '__main__':

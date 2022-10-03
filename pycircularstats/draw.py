@@ -266,10 +266,10 @@ def drawqqplot(azimuths):
     return ax.get_figure()
 
 
-def drawVectors(data, scaleVector=None, zoomed_points=[]):
-    #data = data[[2,3,24],:]
-    xini = data[:,0]; yini = data[:,1]
-    xfin = data[:,2]; yfin = data[:,3]
+def drawVectors(vectors, scaleVector=None, zoomed_points=[]):
+    if np.sum(np.abs(vectors)) == 0: return None
+    xini = vectors[:,0]; yini = vectors[:,1]
+    xfin = vectors[:,2]; yfin = vectors[:,3]
     #xfin = data[:,2]*1.0001; yfin = data[:,3]*1.0001
     xmin = min(np.min(xini), np.min(xfin))
     xmax = max(np.max(xini), np.max(xfin))
@@ -280,7 +280,7 @@ def drawVectors(data, scaleVector=None, zoomed_points=[]):
         ax = fig.add_subplot(111)
         ax.set_xlim(xmin, xmax)
         ax.set_ylim(ymin, ymax)
-        for i in range(len(data[:,0])):
+        for i in range(len(vectors[:,0])):
             valueScale = 0.2
             style = "->, head_width="+str(valueScale)+", head_length="+str(valueScale)
             ax.annotate("",
@@ -292,7 +292,7 @@ def drawVectors(data, scaleVector=None, zoomed_points=[]):
                             ),
             )
     if zoomed_points:
-        listapoints = data[zoomed_points,:4]
+        listapoints = vectors[zoomed_points,:4]
         print(listapoints)
         x1 = np.min(listapoints[:,[0,2]]); x2 = np.max(listapoints[:,[0,2]])
         y1 = np.min(listapoints[:,[1,3]]); y2 = np.max(listapoints[:,[1,3]])
@@ -316,6 +316,6 @@ def drawVectors(data, scaleVector=None, zoomed_points=[]):
                             linewidth = 1,
                             ),
             )
-    ax.set_title("Sample size, n = "+str(len(data[:,0])), va='bottom')
+    ax.set_title("Sample size, n = "+str(len(vectors[:,0])), va='bottom')
 
     return ax.get_figure()

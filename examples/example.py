@@ -31,6 +31,7 @@ def main():
         plt.show()
         pyCdraw.drawPoints(X_coordinate, Y_coordinate, outlier_percent = 0.08)
         plt.show()
+        exit()
         pyCdraw.drawdensityMap(X_coordinate, Y_coordinate, bandwidth=10, paintpoint = True)
         plt.show()
         pyCdraw.drawqqplot(azimuths)

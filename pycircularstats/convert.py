@@ -75,8 +75,10 @@ def getpolarvalues(scale, data_x, data_y):
 
 def tocalculateincr(matrix):
     num_elements = matrix.shape[0]
-    x_coordinates = matrix[:,0] - matrix[:,2]
-    y_coordinates = matrix[:,1] - matrix[:,3]
+    #x_coordinates = matrix[:,0] - matrix[:,2]
+    #y_coordinates = matrix[:,1] - matrix[:,3]
+    x_coordinates = matrix[:,2] - matrix[:,0]
+    y_coordinates = matrix[:,3] - matrix[:,1]
     incr = np.column_stack((x_coordinates, y_coordinates))
     incr = np.reshape(np.array(incr), (num_elements, 2))
     return incr

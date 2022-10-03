@@ -34,52 +34,39 @@ def drawdistribution(azimuths):
     scale_factor = 1
     data_x = list()
     data_y = list()
-    his = pyCmath.histogram(azimuths, 1)
-    cbase = max(his[:,0]) // 33 + 1       # number of elements for each point in the plot
-    #print("cbase", cbase)
-    #cbase = 2
-    d1 = 20
+    his = pyCmath.histogram(azimuths, 1)[:,0]
+    cbase = (np.max(his) / 33) + 1.8       # number of elements for each point in the plot
+    d1 = 21
 
-    vals2mult = []
-    for i in range(360):
-        h = his[i,0] // cbase  # elements/point as a function of absolute frequency of 10 classes
+    fig, ax = creategraphicpolar(len(azimuths), d1*1.2)
+
+    for i in range(359):
+        h = his[i+1] / cbase  # elements/point as a function of absolute frequency of 10 classes
         if h > 0:
-            for g in range(1,int(h)):
-                radian = np.radians(i)
+            for g in range(int(h)+1):
+                radian = np.radians(90-i)
                 x = np.cos(radian) * (d1 - ((d1 * 0.025) * g))
                 y = np.sin(radian) * (d1 - ((d1 * 0.025) * g))
                 data_x.append(x)
                 data_y.append(y)
+    data_x = np.array(data_x)
+    data_y = np.array(data_y)
     n, module, theta, _ = pyCconvert.getpolarvalues(scale_factor, np.array(data_x), np.array(data_y))
-    fig, ax = creategraphicpolar(len(azimuths), d1*1.2)
-    #ax.plot(np.radians(theta), module,'o', color='b',markersize=5)
-    #ax.plot(data_y, data_x,'o', color='b',markersize=5)
-    #ax.plot(theta, len(theta)*[20],'o', color='b',markersize=5)
-    ax.scatter(theta, module, color='b')
-    #ax.scatter(data_y, data_x, color='b')
+    theta = np.radians(theta)
+    ax.scatter(theta, module, color='b', s=3)
+
     azimuth = pyCmath.averageazimuth(azimuths)
-    #print("azimuthazimuthazimuthazimuth",azimuth)
-    #radian = np.radians(90 - azimuth)
-    print("azimuthazimuthazimuthazimuthazimuth", azimuth, np.average(azimuths))
     radian = np.radians(azimuth)
-    x = np.cos(radian) * (d1 + 1.1)
-    y = np.sin(radian) * (d1 + 1.1)
+    x = np.cos(radian) * (d1 + (d1 * 0.1))
+    y = np.sin(radian) * (d1 + (d1 * 0.1))
     vm = pyCmath.vonmisesparameter(azimuths)
-    print("vmvmvmvm",vm)
     if vm >= 0.9:
-        #print(np.degrees(np.arctan2(x,y)), np.sqrt(x**2 + y**2))
         ax.annotate("",
                     xy=(np.arctan2(y,x), np.sqrt(x**2 + y**2)), xycoords='data',
                     xytext=(0, 0), textcoords='data',
                     arrowprops=dict(arrowstyle="->, head_width=1, head_length=1",
                                     connectionstyle="arc3",edgecolor='red',
                                     linewidth = 3))
-        #ax.annotate("",
-                    #xy=(pyCmath.averageazimuth(np.degrees(theta)), np.average(module)), xycoords='data',
-                    #xytext=(0, 0), textcoords='data',
-                    #arrowprops=dict(arrowstyle="->, head_width=1, head_length=1",
-                                    #connectionstyle="arc3",edgecolor='red',
-                                    #linewidth = 3))
     else:
         print("Concentration is low, the mean azimuth is not drawn")
     # confidence interval
@@ -214,14 +201,15 @@ def drawPoints(data_x, data_y, outlier_percent = 0.05):
     #theta = np.arctan2(data_x, data_y)
     #theta = np.arctan2(data_y, data_x)
     [module, theta] = pyCconvert.vectors2polar(np.stack((data_x, data_y), axis=1)).T
+    theta = np.radians(theta)
     cant = int(module.shape[0] * outlier_percent)
     inds = np.argsort(-module)
     module = -np.sort(-module)
     theta = theta[inds]
     with plt.style.context(STYLE_MATPLOTLIB):
         fig, ax = creategraphicpolar(data_x.shape[0], np.max(module) * 1.2)
-        ax.plot(theta[cant:],module[cant:],'o', color='b',markersize=5)
-        ax.plot(theta[:cant],module[:cant],'o', color='r',markersize=5)
+        ax.plot(theta[cant:],module[cant:],'o', color='b', markersize=3)
+        ax.plot(theta[:cant],module[:cant],'o', color='r', markersize=3)
     return ax.get_figure()
 
 
@@ -244,8 +232,8 @@ def drawdensityMap(data_x, data_y, outlier_percent = 0.05, paintpoint = False,
         cb = plt.colorbar(ax.pcolor(x,y,z))
         cb.ax.set_ylabel('Probability density')
         if paintpoint:
-            ax.plot(data[:-cant,0],data[:-cant,1],'o', mfc='lightblue',mec='k')
-            ax.plot(data[-cant:,0],data[-cant:,1],'o', mfc='firebrick',mec='k')
+            ax.plot(data[:-cant,0],data[:-cant,1],'o', mfc='lightblue',mec='k', markersize=5)
+            ax.plot(data[-cant:,0],data[-cant:,1],'o', mfc='firebrick',mec='k', markersize=5)
     return ax.get_figure()
 
 

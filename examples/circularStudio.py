@@ -4,7 +4,6 @@ import pycircularstats.fileIO as pyCfileIO
 import pycircularstats.convert as pyCconvert
 import pycircularstats.math as pyCmath
 import pycircularstats.draw as pyCdraw
-import pycircularstats.mouseEventQt as pyCmouseEvent
 import PyQt5
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 
@@ -21,7 +20,7 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         #self.imageicono.setPixmap(QtGui.QPixmap('../images/logo.png').scaled(202,191, QtCore.Qt.KeepAspectRatio))
         self.buttonload.clicked.connect(self.load_data)
         self.calculate.clicked.connect(self.exec_func)
-
+        self.savedata.clicked.connect(self.save_data2pc)
         self.type0.setEnabled(True)
         self.type1.setEnabled(True)
         self.type2.setEnabled(True)
@@ -32,15 +31,7 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         self.buttonload.setEnabled(True)
         self.buttonmap.setEnabled(False)
         self.Map.setEnabled(False)
-
-        handler = pyCmouseEvent.mouseEvent(self.graphicsView)
-        self.graphicsView.installEventFilter(handler)
-        handler.mousePressed.connect(lambda event: self.mousePressEvent(event, 1))
-        self.graphicsView.setMouseTracking(True)
-
-
-    def mousePressEvent(self, event, posMouse=None):
-        if posMouse == 1: self.save_data2pc()
+        self.savedata.setEnabled(False)
 
 
     def save_data2pc(self):
@@ -48,11 +39,10 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         if self.show_image:
             fileName = QtWidgets.QFileDialog.getSaveFileName(self,self.tr("Export to PNG"), "image", self.tr("PNG image (*.png)"))
             if fileName[0] != "":
-                rect = self.sceneGrahics.itemsBoundingRect()
+                size = self.canvas.size()
+                width, height = size.width(), size.height()
+                rect = QtGui.QPixmap(QtGui.QImage(self.canvas.buffer_rgba(), width, height, QtGui.QImage.Format_ARGB32).rgbSwapped())
                 pixmap = QtGui.QPixmap(int(rect.width()), int(rect.height()))
-                painter = QtGui.QPainter(pixmap)
-                self.sceneGrahics.render(painter, rect)
-                del painter
                 pixmap.save(str(fileName[0]) + '.png')
             else:
                 pass
@@ -79,15 +69,9 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         if objectReturn != []:
             self.sceneGrahics.clear()
             try:
-                canvas = FigureCanvas(objectReturn)
-                canvas.draw()
-                size = canvas.size()
-                width, height = size.width(), size.height()
-                item = QtGui.QPixmap(QtGui.QImage(canvas.buffer_rgba(), width, height, QtGui.QImage.Format_ARGB32).rgbSwapped())
-                self.sceneGrahics = QtWidgets.QGraphicsScene()
-                self.sceneGrahics.addPixmap(item)
-                self.graphicsView.setScene(self.sceneGrahics)
-                self.sceneGrahics.update()
+                self.canvas = FigureCanvas(objectReturn)
+                self.canvas.setGeometry(0, 0, self.graphicsView.width(), self.graphicsView.height())
+                self.sceneGrahics.addWidget(self.canvas)
                 self.show_image = True
                 self.show_text  = False
             except: # its text
@@ -98,6 +82,7 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
             self.resizeEvent(None)
         else:
             self.showMessageInView("ERROR: No information wind in region")
+
 
     def load_data(self):
         print(self.imageicono.geometry())
@@ -121,12 +106,15 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
             except:
                 self.show_message("ERROR", "invalid text format")
 
+
     def resizeEvent(self, event):
         bounds = self.sceneGrahics.itemsBoundingRect()
         self.graphicsView.fitInView(bounds, QtCore.Qt.KeepAspectRatioByExpanding)
         self.graphicsView.centerOn(0,0)
 
+
     def exec_func(self):
+        self.savedata.setEnabled(True)
         if self.drawmoduleandazimuthdistribution.isChecked():
             self.drawazimuthdistrib()
         elif self.drawdistribution.isChecked():
@@ -145,6 +133,8 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
             self.modulestats()
         elif self.azimuthstats.isChecked():
             self.azistats()
+        else:
+            self.savedata.setEnabled(False)
 
     def drawazimuthdistrib(self):
         figure = pyCdraw.drawmoduleandazimuthdistribution(self.X_coordinate, self.Y_coordinate)
